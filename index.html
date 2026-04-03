@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СИНАПС</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- AUTH SCREENS -->
+<div id="authScreen" class="auth-screen">
+    <!-- Login -->
+    <div id="loginView" class="auth-container">
+        <div class="auth-logo">
+            <div class="logo-icon"><i class="fas fa-brain"></i></div>
+            <h1>СИНАПС</h1>
+            <p class="auth-subtitle">Нейросеть твоих знакомств</p>
+        </div>
+        <form id="loginForm" class="auth-form">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="loginUsername" placeholder="Имя пользователя" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPassword" placeholder="Пароль" required>
+            </div>
+            <button type="submit" class="btn-primary">Войти</button>
+            <p class="auth-switch">Нет аккаунта? <a href="#" id="showRegister">Создать</a></p>
+        </form>
+    </div>
+
+    <!-- Register -->
+    <div id="registerView" class="auth-container hidden">
+        <div class="auth-logo small">
+            <div class="logo-icon small"><i class="fas fa-brain"></i></div>
+            <h1>СИНАПС</h1>
+        </div>
+        <form id="registerForm" class="auth-form">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="regName" placeholder="Имя и фамилия" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-at"></i>
+                <input type="text" id="regUsername" placeholder="Имя пользователя" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="regPassword" placeholder="Пароль" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-graduation-cap"></i>
+                <input type="text" id="regUni" placeholder="Университет / колледж">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-pen"></i>
+                <textarea id="regBio" placeholder="Расскажи о себе..." rows="2"></textarea>
+            </div>
+            <div class="hobbies-section">
+                <h3>Выбери кружки и интересы <span class="required-badge">мин. 1</span></h3>
+                <div id="hobbiesGrid" class="hobbies-grid"></div>
+                <p id="hobbyError" class="error-text hidden">Выбери хотя бы один кружок!</p>
+            </div>
+            <button type="submit" class="btn-primary">Создать аккаунт</button>
+            <p class="auth-switch">Уже есть аккаунт? <a href="#" id="showLogin">Войти</a></p>
+        </form>
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appScreen" class="app-screen hidden">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-small"><i class="fas fa-brain"></i> СИНАПС</div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-btn active" data-tab="chats">
+                <i class="fas fa-comments"></i>
+                <span>Чаты</span>
+                <span id="unreadBadge" class="badge hidden">0</span>
+            </button>
+            <button class="nav-btn" data-tab="synapse">
+                <i class="fas fa-project-diagram"></i>
+                <span>Синапс</span>
+            </button>
+            <button class="nav-btn" data-tab="support">
+                <i class="fas fa-heart"></i>
+                <span>Поддержка</span>
+            </button>
+            <button class="nav-btn" data-tab="profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Профиль</span>
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <div id="currentUserInfo" class="current-user-info"></div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- CHATS TAB -->
+        <div id="chatsTab" class="tab-content active">
+            <div class="chats-layout">
+                <!-- Chat List -->
+                <div id="chatListPanel" class="chat-list-panel">
+                    <div class="panel-header">
+                        <h2>Сообщения</h2>
+                        <button id="newChatBtn" class="icon-btn" title="Новый чат"><i class="fas fa-edit"></i></button>
+                    </div>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="chatSearch" placeholder="Поиск чатов...">
+                    </div>
+                    <div id="chatList" class="chat-list"></div>
+                </div>
+
+                <!-- Chat Window -->
+                <div id="chatWindow" class="chat-window">
+                    <div id="chatPlaceholder" class="chat-placeholder">
+                        <i class="fas fa-comments"></i>
+                        <h3>Выбери чат</h3>
+                        <p>Или начни новый разговор через Синапс</p>
+                    </div>
+                    <div id="chatActive" class="chat-active hidden">
+                        <div class="chat-header">
+                            <button id="chatBackBtn" class="icon-btn mobile-only"><i class="fas fa-arrow-left"></i></button>
+                            <div id="chatAvatar" class="chat-header-avatar"></div>
+                            <div class="chat-header-info">
+                                <h3 id="chatName"></h3>
+                                <span id="chatStatus" class="chat-status"></span>
+                            </div>
+                            <div class="chat-header-actions">
+                                <button class="icon-btn" id="chatProfileBtn" title="Профиль"><i class="fas fa-user"></i></button>
+                            </div>
+                        </div>
+                        <div id="messagesContainer" class="messages-container"></div>
+                        <div class="message-input-area">
+                            <button class="icon-btn" id="emojiBtn"><i class="fas fa-smile"></i></button>
+                            <div id="emojiPicker" class="emoji-picker hidden"></div>
+                            <input type="text" id="messageInput" placeholder="Написать сообщение...">
+                            <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SYNAPSE TAB -->
+        <div id="synapseTab" class="tab-content">
+            <div class="synapse-layout">
+                <div class="synapse-toolbar">
+                    <h2><i class="fas fa-project-diagram"></i> Граф связей</h2>
+                    <div class="synapse-controls">
+                        <button id="zoomIn" class="icon-btn" title="Приблизить"><i class="fas fa-plus"></i></button>
+                        <button id="zoomOut" class="icon-btn" title="Отдалить"><i class="fas fa-minus"></i></button>
+                        <button id="resetView" class="icon-btn" title="Сбросить"><i class="fas fa-expand"></i></button>
+                        <div class="filter-group">
+                            <label><input type="checkbox" id="showPeople" checked> Люди</label>
+                            <label><input type="checkbox" id="showGroups" checked> Группы</label>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="synapseCanvas"></canvas>
+                <!-- Node Info Panel -->
+                <div id="nodeInfoPanel" class="node-info-panel hidden">
+                    <button id="closeNodeInfo" class="icon-btn close-btn"><i class="fas fa-times"></i></button>
+                    <div id="nodeInfoContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUPPORT TAB -->
+        <div id="supportTab" class="tab-content">
+            <div class="support-layout">
+                <div class="support-header">
+                    <div class="support-icon"><i class="fas fa-heart"></i></div>
+                    <h2>Комната поддержки</h2>
+                    <p>Здесь безопасно. Поговори с кем-то, кто поймёт.</p>
+                </div>
+                <div class="support-options">
+                    <div class="support-card" id="anonChatBtn">
+                        <div class="support-card-icon"><i class="fas fa-mask"></i></div>
+                        <h3>Анонимный чат</h3>
+                        <p>Поговори с кем-то анонимно. Без имён, без осуждения.</p>
+                    </div>
+                    <div class="support-card" id="moodBtn">
+                        <div class="support-card-icon"><i class="fas fa-cloud-sun"></i></div>
+                        <h3>Дневник настроения</h3>
+                        <p>Запиши свои мысли и отследи своё состояние.</p>
+                    </div>
+                    <div class="support-card" id="breatheBtn">
+                        <div class="support-card-icon"><i class="fas fa-wind"></i></div>
+                        <h3>Дыхательные упражнения</h3>
+                        <p>Простые техники, чтобы успокоиться прямо сейчас.</p>
+                    </div>
+                    <div class="support-card" id="hotlineBtn">
+                        <div class="support-card-icon"><i class="fas fa-phone"></i></div>
+                        <h3>Горячие линии</h3>
+                        <p>Контакты профессиональной помощи 24/7.</p>
+                    </div>
+                </div>
+
+                <!-- Mood Journal -->
+                <div id="moodJournal" class="support-section hidden">
+                    <h3><i class="fas fa-arrow-left" id="moodBack"></i> Дневник настроения</h3>
+                    <div class="mood-selector">
+                        <span class="mood-option" data-mood="great">😄</span>
+                        <span class="mood-option" data-mood="good">🙂</span>
+                        <span class="mood-option" data-mood="neutral">😐</span>
+                        <span class="mood-option" data-mood="bad">😔</span>
+                        <span class="mood-option" data-mood="awful">😢</span>
+                    </div>
+                    <textarea id="moodText" placeholder="Что у тебя на душе?..." rows="4"></textarea>
+                    <button class="btn-primary" id="saveMood">Сохранить запись</button>
+                    <div id="moodHistory" class="mood-history"></div>
+                </div>
+
+                <!-- Breathing -->
+                <div id="breatheSection" class="support-section hidden">
+                    <h3><i class="fas fa-arrow-left" id="breatheBack"></i> Дыхательное упражнение</h3>
+                    <div class="breathe-circle" id="breatheCircle">
+                        <span id="breatheText">Начать</span>
+                    </div>
+                    <p class="breathe-info">Нажми на круг, чтобы начать. Техника 4-7-8.</p>
+                </div>
+
+                <!-- Hotlines -->
+                <div id="hotlineSection" class="support-section hidden">
+                    <h3><i class="fas fa-arrow-left" id="hotlineBack"></i> Горячие линии</h3>
+                    <div class="hotline-list">
+                        <div class="hotline-card">
+                            <h4>Телефон доверия</h4>
+                            <a href="tel:88002000122">8-800-2000-122</a>
+                            <p>Бесплатно, круглосуточно</p>
+                        </div>
+                        <div class="hotline-card">
+                            <h4>Психологическая помощь</h4>
+                            <a href="tel:051">051 (с мобильного)</a>
+                            <p>Экстренная психологическая помощь</p>
+                        </div>
+                        <div class="hotline-card">
+                            <h4>Помощь студентам</h4>
+                            <a href="tel:88001013456">8-800-101-34-56</a>
+                            <p>Линия помощи для молодёжи</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Anon Chat -->
+                <div id="anonChatSection" class="support-section hidden">
+                    <h3><i class="fas fa-arrow-left" id="anonBack"></i> Анонимный чат</h3>
+                    <div class="anon-chat-info">
+                        <p>Ты общаешься анонимно. Собеседник тоже не знает, кто ты.</p>
+                    </div>
+                    <div id="anonMessages" class="messages-container"></div>
+                    <div class="message-input-area">
+                        <input type="text" id="anonInput" placeholder="Написать анонимно...">
+                        <button class="send-btn" id="anonSendBtn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE TAB -->
+        <div id="profileTab" class="tab-content">
+            <div class="profile-layout">
+                <div class="profile-card">
+                    <div class="profile-avatar-large" id="profileAvatar"></div>
+                    <h2 id="profileName"></h2>
+                    <p id="profileUsername" class="profile-username"></p>
+                    <p id="profileUni" class="profile-uni"></p>
+                    <p id="profileBio" class="profile-bio"></p>
+                    <div id="profileHobbies" class="profile-hobbies"></div>
+                    <div class="profile-stats">
+                        <div class="stat"><span id="statFriends">0</span><label>Друзей</label></div>
+                        <div class="stat"><span id="statGroups">0</span><label>Групп</label></div>
+                        <div class="stat"><span id="statMessages">0</span><label>Сообщений</label></div>
+                    </div>
+                    <button class="btn-secondary" id="editProfileBtn"><i class="fas fa-edit"></i> Редактировать</button>
+                    <button class="btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+                </div>
+
+                <!-- Edit Profile Modal -->
+                <div id="editProfileModal" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>Редактировать профиль</h3>
+                        <div class="input-group">
+                            <input type="text" id="editName" placeholder="Имя">
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="editUni" placeholder="Университет">
+                        </div>
+                        <div class="input-group">
+                            <textarea id="editBio" placeholder="О себе" rows="3"></textarea>
+                        </div>
+                        <div class="hobbies-section">
+                            <h4>Интересы</h4>
+                            <div id="editHobbiesGrid" class="hobbies-grid"></div>
+                        </div>
+                        <div class="modal-actions">
+                            <button class="btn-secondary" id="cancelEdit">Отмена</button>
+                            <button class="btn-primary" id="saveEdit">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Profile View Modal -->
+        <div id="userProfileModal" class="modal hidden">
+            <div class="modal-content user-profile-modal">
+                <button class="icon-btn close-btn" id="closeUserProfile"><i class="fas fa-times"></i></button>
+                <div id="userProfileContent"></div>
+            </div>
+        </div>
+
+        <!-- New Chat Modal -->
+        <div id="newChatModal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Новый чат</h3>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="newChatSearch" placeholder="Найти пользователя...">
+                </div>
+                <div id="newChatList" class="new-chat-list"></div>
+                <button class="btn-secondary" id="cancelNewChat">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notifications -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
